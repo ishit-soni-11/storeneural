@@ -3,77 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoreNeural - Smart Store Management</title>
-    <meta name="description" content="StoreNeural - Intelligent store management system for incident tracking, till reconciliation, task management, and shift scheduling.">
-    <meta name="author" content="Ishit">
+    <title>StoreNeural - Circle K 2043 Dundas</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Smart Store Management System for Circle K">
+    <meta name="theme-color" content="#ee4d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="StoreNeural">
     
-    <!-- Styles (will be linked in future commits) -->
-    <!-- <link rel="stylesheet" href="css/styles.css"> -->
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  </head>
-  
-  <body>
-    <!-- App Container -->
-    <div id="app">
-      
-      <!-- Header -->
-      <header class="header">
-        <div class="logo">
-          <div class="logo-icon">CK</div>
-          <div>
-            <h1>StoreNeural</h1>
-            <span class="tagline">Smart Store Management</span>
-          </div>
-        </div>
-        <div class="user-info" id="userInfo">
-          <!-- User avatar and info will be rendered here -->
-        </div>
-      </header>
 
-      <!-- Navigation -->
-      <nav class="nav-tabs" id="mainNav">
-        <button class="nav-tab active" data-page="dashboard">📊 Dashboard</button>
-        <button class="nav-tab" data-page="incidents">🚨 Incidents</button>
-        <button class="nav-tab" data-page="till">💰 Till</button>
-        <button class="nav-tab" data-page="tasks">📋 Tasks</button>
-        <button class="nav-tab" data-page="shifts">⏰ Shifts</button>
-        <button class="nav-tab" data-page="announcements">📢 Announcements</button>
-      </nav>
-
-      <!-- Main Content -->
-      <main class="main" id="mainContent">
-        <!-- Pages will be rendered here -->
-        <div class="page active" id="page-dashboard">
-          <h2>Welcome to StoreNeural</h2>
-          <p>Your intelligent store management system.</p>
-        </div>
-      </main>
-
-      <!-- Toast Notifications -->
-      <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-      </div>
-
-    </div>
-
-    <!-- Scripts (will be linked in future commits) -->
-    <!-- <script src="js/firebase.js"></script> -->
-    <!-- <script src="js/app.js"></script> -->
-    
     <script>
-      // Placeholder - Full functionality coming in next commits
-      console.log('StoreNeural v1.0 - Initial Setup');
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDRKpLTtGFtnOxBQuPuHylT5-tfggiuZ9A",
+        authDomain: "storeneural-53501.firebaseapp.com",
+        projectId: "storeneural-53501",
+        storageBucket: "storeneural-53501.appspot.com",
+        messagingSenderId: "586019553038",
+        appId: "storeneural-53501",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
+      var auth = firebase.auth();
     </script>
 
     <style>
-      /* Basic Reset & Variables - Full styles coming in next commit */
       * {
         margin: 0;
         padding: 0;
@@ -84,25 +50,50 @@
         --bg-primary: #0f1419;
         --bg-secondary: #1a1f26;
         --bg-card: #232b35;
+        --bg-input: #2d3640;
         --accent-red: #ee4d2d;
         --accent-orange: #ff8c42;
+        --accent-green: #00c853;
+        --accent-blue: #4da6ff;
         --text-primary: #ffffff;
         --text-secondary: #94a3b8;
+        --text-muted: #64748b;
+        --border: #334155;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+
+      /* Light theme */
+      [data-theme="light"] {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --bg-card: #ffffff;
+        --bg-input: #f1f5f9;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+        --border: #e2e8f0;
       }
 
       body {
-        font-family: 'DM Sans', sans-serif;
+        font-family: "DM Sans", sans-serif;
         background: var(--bg-primary);
         color: var(--text-primary);
         min-height: 100vh;
       }
 
+      /* Header */
       .header {
         background: var(--bg-secondary);
         padding: 16px 24px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
 
       .logo {
@@ -114,7 +105,7 @@
       .logo-icon {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+        background: var(--accent-red);
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -123,62 +114,383 @@
         font-size: 14px;
       }
 
-      .logo h1 {
-        font-size: 1.25rem;
+      .logo-text h1 {
+        font-size: 18px;
         font-weight: 600;
       }
 
-      .tagline {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
+      .logo-text span {
+        font-size: 12px;
+        color: var(--text-muted);
       }
 
-      .nav-tabs {
+      .header-actions {
         display: flex;
-        background: var(--bg-secondary);
-        padding: 0 24px;
-        gap: 8px;
-        overflow-x: auto;
+        align-items: center;
+        gap: 16px;
       }
 
-      .nav-tab {
+      /* Theme Toggle */
+      .theme-toggle {
         background: none;
         border: none;
-        color: var(--text-secondary);
-        padding: 12px 16px;
+        font-size: 24px;
         cursor: pointer;
-        font-size: 0.9rem;
-        white-space: nowrap;
-      }
-
-      .nav-tab.active {
-        color: var(--text-primary);
-        border-bottom: 2px solid var(--accent-orange);
-      }
-
-      .main {
-        padding: 24px;
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-
-      .page {
-        display: none;
-      }
-
-      .page.active {
-        display: block;
-      }
-
-      .toast {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        background: var(--bg-card);
-        padding: 12px 24px;
+        padding: 8px;
         border-radius: 8px;
-        display: none;
+        transition: background 0.2s;
+      }
+
+      .theme-toggle:hover {
+        background: var(--bg-input);
+      }
+
+      /* Navigation */
+      .nav-container {
+        display: flex;
+        min-height: calc(100vh - 73px);
+      }
+
+      .sidebar {
+        width: 240px;
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border);
+        padding: 16px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-bottom: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-input);
+        color: var(--text-primary);
+      }
+
+      .nav-item.active {
+        background: var(--accent-red);
+        color: white;
+      }
+
+      .nav-item span {
+        font-size: 18px;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat-card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 20px;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      .stat-value.positive {
+        color: var(--success);
+      }
+
+      .stat-value.negative {
+        color: var(--danger);
+      }
+
+      /* Quick Actions */
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        color: var(--text-primary);
+      }
+
+      .action-btn:hover {
+        border-color: var(--accent-red);
+        transform: translateY(-2px);
+      }
+
+      .action-btn span {
+        font-size: 24px;
+      }
+
+      /* Grid Layout */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">CK</div>
+        <div class="logo-text">
+          <h1>Store Hub</h1>
+          <span>Circle K London</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="nav-container">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="nav-item active" onclick="showPage('dashboard')">
+          <span>📊</span> Dashboard
+        </div>
+        <div class="nav-item" onclick="showPage('incidents')">
+          <span>🚨</span> Incidents
+        </div>
+        <div class="nav-item" onclick="showPage('till')">
+          <span>💰</span> Till
+        </div>
+        <div class="nav-item" onclick="showPage('tasks')">
+          <span>📋</span> Tasks
+        </div>
+        <div class="nav-item" onclick="showPage('shifts')">
+          <span>⏰</span> Shifts
+        </div>
+        <div class="nav-item" onclick="showPage('announcements')">
+          <span>📢</span> Announcements
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Dashboard Page -->
+        <div class="page active" id="page-dashboard">
+          <div class="section-header" style="margin-bottom: 24px;">
+            <h2 style="font-size: 24px;">👋 Welcome back!</h2>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <div class="action-btn">
+              <span>🚨</span>
+              <div>Report Incident</div>
+            </div>
+            <div class="action-btn">
+              <span>💰</span>
+              <div>Enter Till Count</div>
+            </div>
+            <div class="action-btn">
+              <span>⏰</span>
+              <div>Clock In/Out</div>
+            </div>
+            <div class="action-btn">
+              <span>✅</span>
+              <div>View Tasks</div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Today's Sales</div>
+              <div class="stat-value">$0.00</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Till Status</div>
+              <div class="stat-value">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Tasks Done</div>
+              <div class="stat-value">0/0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Incidents Today</div>
+              <div class="stat-value">0</div>
+            </div>
+          </div>
+
+          <!-- Grid -->
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h2>👥 Who's Working Today</h2>
+              </div>
+              <div class="card-body">
+                <p style="color: var(--text-muted);">No shifts scheduled</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>📢 Latest Announcements</h2>
+              </div>
+              <div class="card-body">
+                <p style="color: var(--text-muted);">No announcements</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incidents Page (placeholder) -->
+        <div class="page" id="page-incidents" style="display: none;">
+          <h2>🚨 Incidents</h2>
+          <p style="color: var(--text-muted); margin-top: 16px;">Coming soon...</p>
+        </div>
+
+        <!-- Till Page (placeholder) -->
+        <div class="page" id="page-till" style="display: none;">
+          <h2>💰 Till Reconciliation</h2>
+          <p style="color: var(--text-muted); margin-top: 16px;">Coming soon...</p>
+        </div>
+
+        <!-- Tasks Page (placeholder) -->
+        <div class="page" id="page-tasks" style="display: none;">
+          <h2>📋 Tasks</h2>
+          <p style="color: var(--text-muted); margin-top: 16px;">Coming soon...</p>
+        </div>
+
+        <!-- Shifts Page (placeholder) -->
+        <div class="page" id="page-shifts" style="display: none;">
+          <h2>⏰ Shifts</h2>
+          <p style="color: var(--text-muted); margin-top: 16px;">Coming soon...</p>
+        </div>
+
+        <!-- Announcements Page (placeholder) -->
+        <div class="page" id="page-announcements" style="display: none;">
+          <h2>📢 Announcements</h2>
+          <p style="color: var(--text-muted); margin-top: 16px;">Coming soon...</p>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ==================== THEME ====================
+      function toggleTheme() {
+        const body = document.body;
+        const btn = document.querySelector('.theme-toggle');
+        
+        if (body.getAttribute('data-theme') === 'light') {
+          body.removeAttribute('data-theme');
+          btn.textContent = '🌙';
+          localStorage.setItem('theme', 'dark');
+        } else {
+          body.setAttribute('data-theme', 'light');
+          btn.textContent = '☀️';
+          localStorage.setItem('theme', 'light');
+        }
+      }
+
+      function loadTheme() {
+        const saved = localStorage.getItem('theme');
+        const btn = document.querySelector('.theme-toggle');
+        
+        if (saved === 'light') {
+          document.body.setAttribute('data-theme', 'light');
+          btn.textContent = '☀️';
+        }
+      }
+
+      // ==================== NAVIGATION ====================
+      function showPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(page => {
+          page.style.display = 'none';
+        });
+        
+        // Show selected page
+        document.getElementById('page-' + pageId).style.display = 'block';
+        
+        // Update nav active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+      }
+
+      // ==================== INIT ====================
+      document.addEventListener('DOMContentLoaded', function() {
+        loadTheme();
+      });
+    </script>
   </body>
 </html>
